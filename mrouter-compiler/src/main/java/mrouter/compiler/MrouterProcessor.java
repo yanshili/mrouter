@@ -79,7 +79,7 @@ public class MrouterProcessor extends AbstractProcessor {
         sb.append("package " + ROUTER_PACKAGE + ";\n\n");
 
         sb.append("import java.util.HashMap;\n");
-        sb.append("import java.util.Map;\n");
+        sb.append("import java.util.Map;\n\n");
 
         sb.append("public class " + clzName + "{\n\n");
 

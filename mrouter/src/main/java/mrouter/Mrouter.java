@@ -65,6 +65,7 @@ public class Mrouter {
             return false;
         }
 
+        Log.i(TAG,"before open the router \"" +routerUri+ "\".");
         /**
          * 打开web网页
          */
@@ -148,6 +149,8 @@ public class Mrouter {
             Log.e(TAG, "router \"" +routerUri+ "\" is invalid uri path!!!");
             return false;
         }
+
+        Log.i(TAG,"before open the router \"" +routerUri+ "\".");
 
         if (routerUri.startsWith("http://")||routerUri.startsWith("https://")){
 
