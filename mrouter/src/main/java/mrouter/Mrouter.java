@@ -184,7 +184,18 @@ public class Mrouter {
                 }
             }
 
-            dataIntent.setClass(mContext, activityClazz);
+            if (context==null){
+                dataIntent.setClass(mContext, activityClazz);
+            } else if (context instanceof Activity){
+                dataIntent.setClass((Activity)context, activityClazz);
+            }else if (context instanceof Fragment){
+                dataIntent.setClass(((Fragment)context).getContext(), activityClazz);
+            }else if (context instanceof android.app.Fragment){
+                dataIntent.setClass(((android.app.Fragment)context).getActivity(), activityClazz);
+            }else {
+                dataIntent.setClass(mContext, activityClazz);
+            }
+
         }
 
 
