@@ -21,9 +21,11 @@ import java.util.Set;
  * 描述：
  */
 
-public enum Mrouter {
-    INSTANCE;
+public class Mrouter {
 
+    private static class Holder{
+        private static Mrouter instance=new Mrouter();
+    }
 
     private static final String TAG="Mrouter";
 
@@ -32,11 +34,11 @@ public enum Mrouter {
     private Map<String, Class> routerCache=new HashMap<>();
 
     public static Mrouter getInstance(){
-        return INSTANCE;
+        return Holder.instance;
     }
 
     public void init(Context context){
-        mContext=context.getApplicationContext();
+        mContext=context;
         routerCache=new HashMap<>();
     }
 
@@ -83,13 +85,18 @@ public enum Mrouter {
         /**
          * 打开系统注册的路由activity
          */
+        Class activityClazz = findActivity(routerUri);
+        if (activityClazz==null){
+            Log.e(TAG, "there is no activity of the router \""+routerUri+"\"!!!");
+            return false;
+        }
+        if (dataIntent==null){
+            dataIntent=new Intent();
+        }
+        dataIntent.setClass(mContext,activityClazz);
         PackageManager packageManager = mContext.getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(dataIntent, 0);
         if(activities.size() > 0){
-
-            if (dataIntent==null){
-                dataIntent=new Intent();
-            }
 
             Uri uri = Uri.parse(routerUri);
             dataIntent.setData(uri);
@@ -102,16 +109,8 @@ public enum Mrouter {
         /**
          * 打开指定类名的activity
          */
-        Class activityClazz = findActivity(routerUri);
-        if (activityClazz==null){
-            Log.e(TAG, "there is no activity of the router \""+routerUri+"\"!!!");
-            return false;
-        }
-        Uri uri = Uri.parse(routerUri);
-        if (dataIntent==null){
-            dataIntent=new Intent();
-        }
 
+        Uri uri = Uri.parse(routerUri);
         dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Set<String> queryParameterNames = uri.getQueryParameterNames();
         if(queryParameterNames != null && queryParameterNames.size() > 0){
