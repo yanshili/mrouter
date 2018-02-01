@@ -27,8 +27,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.1'
 
-    compile project(':mrouter-compiler')
-    compile project(':mrouter-annotations')
+//    compile project(':mrouter-compiler')
+//    compile project(':mrouter-annotations')
 
+    compile 'me.mooney:mrouter-compiler:0.1.0'
+    compile 'me.mooney:mrouter-annotations:0.1.0'
 }
+
+//apply from: rootProject.file('/mrouter/maven_publish.gradle')
 
