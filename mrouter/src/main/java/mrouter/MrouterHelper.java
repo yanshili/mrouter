@@ -26,7 +26,14 @@ class MrouterHelper {
     }
 
     public static boolean isValidURI(String uri) {
-        if (uri == null || uri.indexOf(' ') >= 0 || uri.indexOf('\n') >= 0) {
+        if (uri==null){
+            return false;
+        }
+
+        if (uri.contains("?")) {
+            uri = uri.substring(0, uri.indexOf("?"));
+        }
+        if (uri.indexOf(' ') >= 0 || uri.indexOf('\n') >= 0) {
             return false;
         }
         String scheme = Uri.parse(uri).getScheme();
