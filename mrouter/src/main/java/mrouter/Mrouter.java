@@ -68,16 +68,31 @@ public class Mrouter {
         }
 
         Log.i(TAG, "before open the router \"" + routerUri + "\".");
+
+        /**
+         * 设置参数
+         */
+        if (dataIntent == null) {
+            dataIntent = new Intent();
+        }
+        Uri uri = Uri.parse(routerUri);
+        Set<String> queryParameterNames = uri.getQueryParameterNames();
+        if (queryParameterNames != null && queryParameterNames.size() > 0) {
+            for (String key : queryParameterNames) {
+                dataIntent.putExtra(key, uri.getQueryParameter(key));
+            }
+        }
+
         /**
          * 打开web网页
          */
         if (routerUri.startsWith("http://") || routerUri.startsWith("https://")) {
 
-            Uri uri = Uri.parse(routerUri); // url为你要链接的地址
+//            Uri uri = Uri.parse(routerUri); // url为你要链接的地址
 //            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            if (dataIntent == null) {
-                dataIntent = new Intent();
-            }
+//            if (dataIntent == null) {
+//                dataIntent = new Intent();
+//            }
             dataIntent.setAction(Intent.ACTION_VIEW);
             dataIntent.setData(uri);
             dataIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -93,15 +108,12 @@ public class Mrouter {
             Log.e(TAG, "there is no activity of the router \"" + routerUri + "\"!!!");
             return false;
         }
-        if (dataIntent == null) {
-            dataIntent = new Intent();
-        }
+
         dataIntent.setClass(mContext, activityClazz);
         PackageManager packageManager = mContext.getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(dataIntent, 0);
         if (activities.size() > 0) {
 
-            Uri uri = Uri.parse(routerUri);
             dataIntent.setData(uri);
             dataIntent.setAction(Intent.ACTION_VIEW);
             dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,15 +124,8 @@ public class Mrouter {
         /**
          * 打开指定类名的activity
          */
-
-        Uri uri = Uri.parse(routerUri);
         dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Set<String> queryParameterNames = uri.getQueryParameterNames();
-        if (queryParameterNames != null && queryParameterNames.size() > 0) {
-            for (String key : queryParameterNames) {
-                dataIntent.putExtra(key, uri.getQueryParameter(key));
-            }
-        }
+
         dataIntent.setClass(mContext, activityClazz);
 
         return doOpen(null, routerUri, -1, dataIntent);
@@ -149,53 +154,61 @@ public class Mrouter {
      */
     public boolean openForResult(Object context, String routerUri, int requestCode, Intent dataIntent) {
 
-        if (MrouterHelper.isValidURI(routerUri)) {
+        if (!MrouterHelper.isValidURI(routerUri)) {
             Log.e(TAG, "router \"" + routerUri + "\" is invalid uri path!!!");
             return false;
         }
 
         Log.i(TAG, "before open the router \"" + routerUri + "\".");
 
+        /**
+         * 设置参数
+         */
+        if (dataIntent == null) {
+            dataIntent = new Intent();
+        }
+        Uri uri = Uri.parse(routerUri);
+        Set<String> queryParameterNames = uri.getQueryParameterNames();
+        if (queryParameterNames != null && queryParameterNames.size() > 0) {
+            for (String key : queryParameterNames) {
+                dataIntent.putExtra(key, uri.getQueryParameter(key));
+            }
+        }
+
+        /**
+         * 打开web网页
+         */
         if (routerUri.startsWith("http://") || routerUri.startsWith("https://")) {
 
-            Uri uri = Uri.parse(routerUri); // url为你要链接的地址
+//            Uri uri = Uri.parse(routerUri); // url为你要链接的地址
 //            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             dataIntent.setAction(Intent.ACTION_VIEW);
             dataIntent.setData(uri);
             dataIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        } else {
+            return doOpen(context, routerUri, requestCode, dataIntent);
+        }
 
-            Class activityClazz = findActivity(routerUri);
-            if (activityClazz == null) {
-                Log.e(TAG, "there is no activity of the router \"" + routerUri + "\"!!!");
-                return false;
-            }
-            Uri uri = Uri.parse(routerUri);
-            if (dataIntent == null) {
-                dataIntent = new Intent();
-            }
-
-//        dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Set<String> queryParameterNames = uri.getQueryParameterNames();
-            if (queryParameterNames != null && queryParameterNames.size() > 0) {
-                for (String key : queryParameterNames) {
-                    dataIntent.putExtra(key, uri.getQueryParameter(key));
-                }
-            }
-
-            if (context==null){
-                dataIntent.setClass(mContext, activityClazz);
-            } else if (context instanceof Activity){
-                dataIntent.setClass((Activity)context, activityClazz);
-            }else if (context instanceof Fragment){
-                dataIntent.setClass(((Fragment)context).getContext(), activityClazz);
-            }else if (context instanceof android.app.Fragment){
-                dataIntent.setClass(((android.app.Fragment)context).getActivity(), activityClazz);
-            }else {
-                dataIntent.setClass(mContext, activityClazz);
-            }
-
+        /**
+         * 打开系统注册的路由activity
+         */
+        Class activityClazz = findActivity(routerUri);
+        if (activityClazz == null) {
+            Log.e(TAG, "there is no activity of the router \"" + routerUri + "\"!!!");
+            return false;
+        }
+        if (context==null){
+            dataIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            dataIntent.setClass(mContext, activityClazz);
+        } else if (context instanceof Activity){
+            dataIntent.setClass((Activity)context, activityClazz);
+        }else if (context instanceof Fragment){
+            dataIntent.setClass(((Fragment)context).getContext(), activityClazz);
+        }else if (context instanceof android.app.Fragment){
+            dataIntent.setClass(((android.app.Fragment)context).getActivity(), activityClazz);
+        }else {
+            dataIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            dataIntent.setClass(mContext, activityClazz);
         }
 
 
