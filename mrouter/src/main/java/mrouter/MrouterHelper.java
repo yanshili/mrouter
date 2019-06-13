@@ -15,18 +15,18 @@ import mrouter.compiler.MrouterProcessor;
 
 class MrouterHelper {
 
-    public static Class reflectActivity(String router) throws Exception{
-        String path=Uri.parse(router).getPath();
+    public static Class getClz(String router) throws Exception {
+        String path = Uri.parse(router).getPath();
         String clzName = path.substring(1, path.indexOf("/", 1));
-        String cacheClzName = MrouterProcessor.ROUTER_PACKAGE+"."+clzName;
+        String cacheClzName = MrouterProcessor.ROUTER_PACKAGE + "." + clzName;
 
-        Class cacheClz=Class.forName(cacheClzName);
-        Method method=cacheClz.getDeclaredMethod("findActivity",String.class);
-        return  (Class) method.invoke(null, router);
+        Class cacheClz = Class.forName(cacheClzName);
+        Method method = cacheClz.getDeclaredMethod("findActivity", String.class);
+        return (Class) method.invoke(null, router);
     }
 
     public static boolean isValidURI(String uri) {
-        if (uri==null){
+        if (uri == null) {
             return false;
         }
 

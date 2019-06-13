@@ -3,10 +3,15 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mrouter.iml" filepath="$PROJECT_DIR$/mrouter.iml" />
       <module fileurl="file://$PROJECT_DIR$/mrouter/mrouter.iml" filepath="$PROJECT_DIR$/mrouter/mrouter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mrouter.iml" filepath="$PROJECT_DIR$/mrouter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mrouter-annotations/mrouter-annotations.iml" filepath="$PROJECT_DIR$/mrouter-annotations/mrouter-annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/mrouter-annotations/mrouter-annotations.iml" filepath="$PROJECT_DIR$/mrouter-annotations/mrouter-annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/mrouter-compiler/mrouter-compiler.iml" filepath="$PROJECT_DIR$/mrouter-compiler/mrouter-compiler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mrouter-compiler/mrouter-compiler.iml" filepath="$PROJECT_DIR$/mrouter-compiler/mrouter-compiler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mrouter/mrouter-mrouter.iml" filepath="$PROJECT_DIR$/mrouter/mrouter-mrouter.iml" />
       <module fileurl="file://$PROJECT_DIR$/mrouter/mrouter-mrouter.iml" filepath="$PROJECT_DIR$/mrouter/mrouter-mrouter.iml" />
       <module fileurl="file://$PROJECT_DIR$/mrouter-resource.iml" filepath="$PROJECT_DIR$/mrouter-resource.iml" />
     </modules>

@@ -34,5 +34,5 @@ dependencies {
     compile 'me.mooney:mrouter-annotations:0.1.0'
 }
 
-apply from: rootProject.file('/mrouter/maven_publish.gradle')
+apply from: rootProject.file('mrouter/maven_publish.gradle')
 

@@ -103,9 +103,13 @@ public class Mrouter {
         /**
          * 打开系统注册的路由activity
          */
-        Class activityClazz = findActivity(routerUri);
+        Class activityClazz = get(routerUri);
         if (activityClazz == null) {
             Log.e(TAG, "there is no activity of the router \"" + routerUri + "\"!!!");
+            return false;
+        }
+        if (!Activity.class.isAssignableFrom(activityClazz)){
+            Log.e(TAG, "the router \"" + routerUri + "\" is not an activity`s router!!!");
             return false;
         }
 
@@ -192,9 +196,13 @@ public class Mrouter {
         /**
          * 打开系统注册的路由activity
          */
-        Class activityClazz = findActivity(routerUri);
+        Class activityClazz = get(routerUri);
         if (activityClazz == null) {
             Log.e(TAG, "there is no activity of the router \"" + routerUri + "\"!!!");
+            return false;
+        }
+        if (!Activity.class.isAssignableFrom(activityClazz)){
+            Log.e(TAG, "the router \"" + routerUri + "\" is not an activity`s router!!!");
             return false;
         }
         if (context==null){
@@ -211,9 +219,7 @@ public class Mrouter {
             dataIntent.setClass(mContext, activityClazz);
         }
 
-
         return doOpen(context, routerUri, requestCode, dataIntent);
-
     }
 
 
@@ -282,29 +288,39 @@ public class Mrouter {
     }
 
 
-    private Class findActivity(String routerUri) {
+    public Class get(String routerUri) {
 
         String router = routerUri;
         if (routerUri.contains("?")) {
             router = routerUri.substring(0, routerUri.indexOf("?"));
         }
 
-        Class activityClz = routerCache.get(router);
+        Class clz = routerCache.get(router);
 
-        if (activityClz == null) {
+        if (clz == null) {
             try {
-                activityClz = MrouterHelper.reflectActivity(router);
+                clz = MrouterHelper.getClz(router);
             } catch (Exception e) {
                 Log.e(TAG, "Errors of reflecting the activity of the router \"" + router + "\"!!!\n" + e);
                 return null;
             }
 
-            if (activityClz != null) {
-                routerCache.put(router, activityClz);
+            if (clz != null) {
+                routerCache.put(router, clz);
             }
         }
 
-        return activityClz;
+        return clz;
+    }
+
+    public Class getFragmentClz(String routerUri) {
+
+        Class clz = get(routerUri);
+        if (Fragment.class.isAssignableFrom(clz)|| android.app.Fragment.class.isAssignableFrom(clz)){
+            return clz;
+        }
+        Log.e(TAG, "the router \"" + routerUri + "\" is not an fragment`s router!!!");
+        return null;
     }
 
 
