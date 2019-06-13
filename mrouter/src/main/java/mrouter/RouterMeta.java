@@ -25,8 +25,6 @@ public class RouterMeta {
 
     public interface Serializer {
         String toJson(Object object);
-
-        Object toObject(String json);
     }
 
 
