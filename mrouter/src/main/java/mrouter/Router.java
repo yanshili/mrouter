@@ -2,7 +2,6 @@ package mrouter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 
@@ -14,11 +13,18 @@ import java.util.Set;
  * 描述：
  */
 
-public class RouterHelper {
+public class Router {
 
+    public static RouterMeta build(String routerOrCanonicalName) {
+        return new Router(routerOrCanonicalName, null, null).mRouterMeta;
+    }
 
-    public static RouterHelper with(String routerOrCanonicalName) {
-        return new RouterHelper(routerOrCanonicalName);
+    public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer) {
+        return new Router(routerOrCanonicalName, serializer, null).mRouterMeta;
+    }
+
+    public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator) {
+        return new Router(routerOrCanonicalName, serializer, navigator).mRouterMeta;
     }
 
     public static void config(Context context, INavigator iNavigator, RouterMeta.Serializer serializer) {
@@ -27,7 +33,9 @@ public class RouterHelper {
         Mrouter.getInstance().init(context);
     }
 
-    private RouterHelper(String routerOrCanonicalName) {
+    private Router(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator) {
+        mSerializer = serializer;
+        mNavigator = navigator;
         mRouterMeta = new RouterMeta(this);
         mRouterMeta.setRouterUri(routerOrCanonicalName);
 
@@ -65,16 +73,6 @@ public class RouterHelper {
     private RouterMeta.Serializer mSerializer;
     private Class mClass;
     private RouterMeta mRouterMeta;
-
-    public RouterMeta with(RouterMeta.Serializer serializer) {
-        mSerializer = serializer;
-        return mRouterMeta;
-    }
-
-    public RouterMeta with(INavigator navigator) {
-        mNavigator = navigator;
-        return mRouterMeta;
-    }
 
     public Class start(Context context) {
         if (Activity.class.isAssignableFrom(mClass)) {

@@ -28,9 +28,9 @@ public class RouterMeta {
     }
 
 
-    private RouterHelper mRouterHelper;
+    private Router mRouterHelper;
 
-    public RouterMeta(RouterHelper routerHelper) {
+    public RouterMeta(Router routerHelper) {
         mRouterHelper = routerHelper;
     }
 
