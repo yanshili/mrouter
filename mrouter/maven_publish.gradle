@@ -15,7 +15,7 @@ def pkgType = 'aar'
 //compile引用时的第1部分
 group = MROUTER_GROUP
 // 版本号，//compile引用时的最后部分项目名，下次更新是只需要更改版本号即可
-version = '0.3.6'
+version = '0.3.7'
 //上面配置后上传至JCenter后的编译路径是这样的： compile 'me.mooney:mrouter:0.1.0'
 
 //生成源文件

@@ -23,8 +23,12 @@ public class Router {
         return build(routerOrCanonicalName, serializer, null, null);
     }
 
-    public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator) {
-        return build(routerOrCanonicalName, serializer, navigator, null);
+    public static RouterMeta build(String routerOrCanonicalName, INavigator navigator) {
+        return build(routerOrCanonicalName, null, navigator, null);
+    }
+
+    public static RouterMeta build(String routerOrCanonicalName, IWebChecker webChecker) {
+        return build(routerOrCanonicalName, null, null, webChecker);
     }
 
     public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator, IWebChecker webChecker) {
@@ -100,7 +104,7 @@ public class Router {
     private RouterMeta mRouterMeta;
 
     private boolean isWeb() {
-        return getWebChecker().isWebMode(mRouterMeta);
+        return getWebChecker() != null && getWebChecker().isWebMode(mRouterMeta);
     }
 
     public Class start(Context context) {
