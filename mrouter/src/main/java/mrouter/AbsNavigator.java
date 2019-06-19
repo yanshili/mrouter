@@ -3,6 +3,8 @@ package mrouter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 
 /**
@@ -57,5 +59,73 @@ public abstract class AbsNavigator implements INavigator {
             requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
         }
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void startWeb(Context context, RouterMeta routerMeta) {
+        Intent intent = new Intent();
+        intent.putExtras(routerMeta.getExtras());
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            context.startActivity(intent, routerMeta.getOptions());
+        } else {
+            context.startActivity(intent);
+        }
+    }
+
+    @Override
+    public void startWebForResult(Activity activity, RouterMeta routerMeta) {
+        if (routerMeta == null) return;
+
+        Intent intent = new Intent();
+        intent.putExtras(routerMeta.getExtras());
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            activity.startActivityForResult(intent, requestCode, routerMeta.getOptions());
+        } else {
+            activity.startActivityForResult(intent, requestCode);
+        }
+    }
+
+    @Override
+    public void startWebForResult(Fragment fragment, RouterMeta routerMeta) {
+        if (routerMeta == null) return;
+
+        Intent intent = new Intent();
+        intent.putExtras(routerMeta.getExtras());
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            fragment.startActivityForResult(intent, requestCode, routerMeta.getOptions());
+        } else {
+            fragment.startActivityForResult(intent, requestCode);
+        }
+    }
+
+    @Override
+    public void startWebForResult(android.app.Fragment fragment, RouterMeta routerMeta) {
+        if (routerMeta == null) return;
+
+        Intent intent = new Intent();
+        intent.putExtras(routerMeta.getExtras());
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            fragment.startActivityForResult(intent, requestCode, routerMeta.getOptions());
+        } else {
+            fragment.startActivityForResult(intent, requestCode);
+        }
     }
 }

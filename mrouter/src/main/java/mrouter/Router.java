@@ -27,7 +27,7 @@ public class Router {
         return new Router(routerOrCanonicalName, serializer, navigator).mRouterMeta;
     }
 
-    public static void config(Context context, INavigator iNavigator, RouterMeta.Serializer serializer) {
+    public static void init(Context context, INavigator iNavigator, RouterMeta.Serializer serializer) {
         sNavigator = iNavigator;
         sSerializer = serializer;
         Mrouter.getInstance().init(context);
@@ -47,7 +47,9 @@ public class Router {
                     mRouterMeta.withString(key, uri.getQueryParameter(key));
                 }
             }
-            mClass = Mrouter.getInstance().getFragmentClz(routerOrCanonicalName);
+            if (!isWeb()){
+                mClass = Mrouter.getInstance().get(routerOrCanonicalName);
+            }
         } else {
             try {
                 mClass = Class.forName(routerOrCanonicalName);
@@ -74,7 +76,16 @@ public class Router {
     private Class mClass;
     private RouterMeta mRouterMeta;
 
+    private boolean isWeb() {
+        String uri = mRouterMeta.getRouterUri();
+        return uri != null && (uri.startsWith("http://") || uri.startsWith("https://"));
+    }
+
     public Class start(Context context) {
+        if (isWeb()) {
+            getNavigator().startWeb(context, mRouterMeta);
+            return null;
+        }
         if (Activity.class.isAssignableFrom(mClass)) {
             getNavigator().startActivity(context, mClass, mRouterMeta);
         } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
@@ -84,6 +95,10 @@ public class Router {
     }
 
     public Class startForResult(Fragment fragment) {
+        if (isWeb()) {
+            getNavigator().startWebForResult(fragment, mRouterMeta);
+            return null;
+        }
         if (Activity.class.isAssignableFrom(mClass)) {
             getNavigator().startActivityForResult(fragment, mClass, mRouterMeta);
         } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
@@ -93,6 +108,10 @@ public class Router {
     }
 
     public Class startForResult(android.app.Fragment fragment) {
+        if (isWeb()) {
+            getNavigator().startWebForResult(fragment, mRouterMeta);
+            return null;
+        }
         if (Activity.class.isAssignableFrom(mClass)) {
             getNavigator().startActivityForResult(fragment, mClass, mRouterMeta);
         } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
@@ -102,6 +121,10 @@ public class Router {
     }
 
     public Class startForResult(Activity activity) {
+        if (isWeb()) {
+            getNavigator().startWebForResult(activity, mRouterMeta);
+            return null;
+        }
         if (Activity.class.isAssignableFrom(mClass)) {
             getNavigator().startActivityForResult(activity, mClass, mRouterMeta);
         } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {

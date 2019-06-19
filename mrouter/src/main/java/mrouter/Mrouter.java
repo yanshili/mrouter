@@ -313,15 +313,4 @@ public class Mrouter {
         return clz;
     }
 
-    public Class getFragmentClz(String routerUri) {
-
-        Class clz = get(routerUri);
-        if (Fragment.class.isAssignableFrom(clz)|| android.app.Fragment.class.isAssignableFrom(clz)){
-            return clz;
-        }
-        Log.e(TAG, "the router \"" + routerUri + "\" is not an fragment`s router!!!");
-        return null;
-    }
-
-
 }

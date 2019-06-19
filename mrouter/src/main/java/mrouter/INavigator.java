@@ -29,4 +29,12 @@ public interface INavigator {
 
     void startActivityForResult(android.app.Fragment fragment, Class activityClz, RouterMeta routerMeta);
 
+    void startWeb(Context context, RouterMeta routerMeta);
+
+    void startWebForResult(Activity activity, RouterMeta routerMeta);
+
+    void startWebForResult(Fragment fragment, RouterMeta routerMeta);
+
+    void startWebForResult(android.app.Fragment fragment, RouterMeta routerMeta);
+
 }
