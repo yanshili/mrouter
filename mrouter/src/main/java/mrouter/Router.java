@@ -16,26 +16,42 @@ import java.util.Set;
 public class Router {
 
     public static RouterMeta build(String routerOrCanonicalName) {
-        return new Router(routerOrCanonicalName, null, null).mRouterMeta;
+        return build(routerOrCanonicalName, null, null, null);
     }
 
     public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer) {
-        return new Router(routerOrCanonicalName, serializer, null).mRouterMeta;
+        return build(routerOrCanonicalName, serializer, null, null);
     }
 
     public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator) {
-        return new Router(routerOrCanonicalName, serializer, navigator).mRouterMeta;
+        return build(routerOrCanonicalName, serializer, navigator, null);
+    }
+
+    public static RouterMeta build(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator, IWebChecker webChecker) {
+        return new Router(routerOrCanonicalName, serializer, navigator, webChecker).mRouterMeta;
     }
 
     public static void init(Context context, INavigator iNavigator, RouterMeta.Serializer serializer) {
+        init(context, iNavigator, serializer, new IWebChecker() {
+            @Override
+            public boolean isWebMode(RouterMeta meta) {
+                String routerUri = meta == null ? null : meta.getRouterUri();
+                return routerUri != null && (routerUri.startsWith("http://") || routerUri.startsWith("https://"));
+            }
+        });
+    }
+
+    public static void init(Context context, INavigator iNavigator, RouterMeta.Serializer serializer, IWebChecker webChecker) {
         sNavigator = iNavigator;
         sSerializer = serializer;
+        sWebChecker = webChecker;
         Mrouter.getInstance().init(context);
     }
 
-    private Router(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator) {
+    private Router(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator, IWebChecker webChecker) {
         mSerializer = serializer;
         mNavigator = navigator;
+        mWebChecker = webChecker;
         mRouterMeta = new RouterMeta(this);
         mRouterMeta.setRouterUri(routerOrCanonicalName);
 
@@ -47,7 +63,7 @@ public class Router {
                     mRouterMeta.withString(key, uri.getQueryParameter(key));
                 }
             }
-            if (!isWeb()){
+            if (!isWeb()) {
                 mClass = Mrouter.getInstance().get(routerOrCanonicalName);
             }
         } else {
@@ -69,22 +85,29 @@ public class Router {
         return sNavigator;
     }
 
+    public IWebChecker getWebChecker() {
+        if (mWebChecker != null) return mWebChecker;
+        return sWebChecker;
+    }
+
     private static INavigator sNavigator;
     private static RouterMeta.Serializer sSerializer;
+    private static IWebChecker sWebChecker;
     private INavigator mNavigator;
     private RouterMeta.Serializer mSerializer;
+    private IWebChecker mWebChecker;
     private Class mClass;
     private RouterMeta mRouterMeta;
 
     private boolean isWeb() {
-        return mRouterMeta.isWebMode();
+        return getWebChecker().isWebMode(mRouterMeta);
     }
 
     public Class start(Context context) {
         if (isWeb()) {
             getNavigator().startWeb(context, mRouterMeta);
         }
-        if (mClass==null){
+        if (mClass == null) {
             return null;
         }
         if (Activity.class.isAssignableFrom(mClass)) {
@@ -100,7 +123,7 @@ public class Router {
             getNavigator().startWebForResult(fragment, mRouterMeta);
             return null;
         }
-        if (mClass==null){
+        if (mClass == null) {
             return null;
         }
         if (Activity.class.isAssignableFrom(mClass)) {
@@ -116,7 +139,7 @@ public class Router {
             getNavigator().startWebForResult(fragment, mRouterMeta);
             return null;
         }
-        if (mClass==null){
+        if (mClass == null) {
             return null;
         }
         if (Activity.class.isAssignableFrom(mClass)) {
@@ -132,7 +155,7 @@ public class Router {
             getNavigator().startWebForResult(activity, mRouterMeta);
             return null;
         }
-        if (mClass==null){
+        if (mClass == null) {
             return null;
         }
         if (Activity.class.isAssignableFrom(mClass)) {
@@ -144,4 +167,7 @@ public class Router {
     }
 
 
+    public interface IWebChecker {
+        boolean isWebMode(RouterMeta meta);
+    }
 }

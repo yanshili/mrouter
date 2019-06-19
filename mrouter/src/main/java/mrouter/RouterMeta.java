@@ -50,14 +50,6 @@ public class RouterMeta {
     }
 
     /**
-     * 是否为网页（浏览器打开）
-     * @return
-     */
-    public boolean isWebMode(){
-        return mRouterUri != null && (mRouterUri.startsWith("http://") || mRouterUri.startsWith("https://"));
-    }
-
-    /**
      * 设置是否为透明
      */
     private Boolean mTransparent;
