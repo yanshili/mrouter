@@ -21,6 +21,12 @@ public abstract class AbsNavigator implements INavigator {
         intent.setClass(context, activityClz);
         if (routerMeta != null) {
             intent.putExtras(routerMeta.getExtras());
+            if (routerMeta.getFlags() != 0) {
+                intent.setFlags(routerMeta.getFlags());
+            }
+            if (routerMeta.getAction() != null) {
+                intent.setAction(routerMeta.getAction());
+            }
         }
         context.startActivity(intent);
     }
@@ -33,6 +39,12 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta != null) {
             intent.putExtras(routerMeta.getExtras());
             requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
+            if (routerMeta.getFlags() != 0) {
+                intent.setFlags(routerMeta.getFlags());
+            }
+            if (routerMeta.getAction() != null) {
+                intent.setAction(routerMeta.getAction());
+            }
         }
         activity.startActivityForResult(intent, requestCode);
     }
@@ -45,6 +57,12 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta != null) {
             intent.putExtras(routerMeta.getExtras());
             requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
+            if (routerMeta.getFlags() != 0) {
+                intent.setFlags(routerMeta.getFlags());
+            }
+            if (routerMeta.getAction() != null) {
+                intent.setAction(routerMeta.getAction());
+            }
         }
         fragment.startActivityForResult(intent, requestCode);
     }
@@ -57,6 +75,12 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta != null) {
             intent.putExtras(routerMeta.getExtras());
             requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
+            if (routerMeta.getFlags() != 0) {
+                intent.setFlags(routerMeta.getFlags());
+            }
+            if (routerMeta.getAction() != null) {
+                intent.setAction(routerMeta.getAction());
+            }
         }
         fragment.startActivityForResult(intent, requestCode);
     }
@@ -67,6 +91,9 @@ public abstract class AbsNavigator implements INavigator {
         intent.putExtras(routerMeta.getExtras());
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        if (routerMeta.getFlags() != 0) {
+            intent.setFlags(routerMeta.getFlags());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             context.startActivity(intent, routerMeta.getOptions());
@@ -83,6 +110,9 @@ public abstract class AbsNavigator implements INavigator {
         intent.putExtras(routerMeta.getExtras());
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        if (routerMeta.getFlags() != 0) {
+            intent.setFlags(routerMeta.getFlags());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
 
@@ -101,6 +131,9 @@ public abstract class AbsNavigator implements INavigator {
         intent.putExtras(routerMeta.getExtras());
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        if (routerMeta.getFlags() != 0) {
+            intent.setFlags(routerMeta.getFlags());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
 
@@ -119,6 +152,9 @@ public abstract class AbsNavigator implements INavigator {
         intent.putExtras(routerMeta.getExtras());
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(routerMeta.getRouterUri()));
+        if (routerMeta.getFlags() != 0) {
+            intent.setFlags(routerMeta.getFlags());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
 

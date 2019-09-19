@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -45,11 +48,22 @@ public class Router {
         });
     }
 
+    private static Map<String, Class> routerCache = new HashMap<>();
+
+    private static boolean inited = false;
+
+    public static boolean isInited(){
+        return inited;
+    }
+
     public static void init(Context context, INavigator iNavigator, RouterMeta.Serializer serializer, IWebChecker webChecker) {
         sNavigator = iNavigator;
         sSerializer = serializer;
         sWebChecker = webChecker;
-        Mrouter.getInstance().init(context);
+        routerCache = new HashMap<>();
+        if (!Mrouter.getInstance().isInited()){
+            Mrouter.getInstance().init(context);
+        }
     }
 
     private Router(String routerOrCanonicalName, RouterMeta.Serializer serializer, INavigator navigator, IWebChecker webChecker) {
@@ -68,7 +82,7 @@ public class Router {
                 }
             }
             if (!isWeb()) {
-                mClass = Mrouter.getInstance().get(routerOrCanonicalName);
+                mClass = get(routerOrCanonicalName);
             }
         } else {
             try {
@@ -103,23 +117,23 @@ public class Router {
     private Class mClass;
     private RouterMeta mRouterMeta;
 
-    private boolean isWeb() {
-        return getWebChecker() != null && getWebChecker().isWebMode(mRouterMeta);
+    public boolean isWeb() {
+        return mRouterMeta.isWeb();
     }
 
     public Class start(Context context) {
         if (isWeb()) {
             getNavigator().startWeb(context, mRouterMeta);
         }
-        if (mClass == null) {
+        if (getTargetClass() == null) {
             return null;
         }
-        if (Activity.class.isAssignableFrom(mClass)) {
-            getNavigator().startActivity(context, mClass, mRouterMeta);
-        } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
-            getNavigator().startFragment(context, mClass, mRouterMeta);
+        if (Activity.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startActivity(context, getTargetClass(), mRouterMeta);
+        } else if (Fragment.class.isAssignableFrom(getTargetClass()) || android.app.Fragment.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startFragment(context, getTargetClass(), mRouterMeta);
         }
-        return mClass;
+        return getTargetClass();
     }
 
     public Class startForResult(Fragment fragment) {
@@ -127,15 +141,15 @@ public class Router {
             getNavigator().startWebForResult(fragment, mRouterMeta);
             return null;
         }
-        if (mClass == null) {
+        if (getTargetClass() == null) {
             return null;
         }
-        if (Activity.class.isAssignableFrom(mClass)) {
-            getNavigator().startActivityForResult(fragment, mClass, mRouterMeta);
-        } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
-            getNavigator().startFragmentForResult(fragment, mClass, mRouterMeta);
+        if (Activity.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startActivityForResult(fragment, getTargetClass(), mRouterMeta);
+        } else if (Fragment.class.isAssignableFrom(getTargetClass()) || android.app.Fragment.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startFragmentForResult(fragment, getTargetClass(), mRouterMeta);
         }
-        return mClass;
+        return getTargetClass();
     }
 
     public Class startForResult(android.app.Fragment fragment) {
@@ -143,15 +157,15 @@ public class Router {
             getNavigator().startWebForResult(fragment, mRouterMeta);
             return null;
         }
-        if (mClass == null) {
+        if (getTargetClass() == null) {
             return null;
         }
-        if (Activity.class.isAssignableFrom(mClass)) {
-            getNavigator().startActivityForResult(fragment, mClass, mRouterMeta);
-        } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
-            getNavigator().startFragmentForResult(fragment, mClass, mRouterMeta);
+        if (Activity.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startActivityForResult(fragment, getTargetClass(), mRouterMeta);
+        } else if (Fragment.class.isAssignableFrom(getTargetClass()) || android.app.Fragment.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startFragmentForResult(fragment, getTargetClass(), mRouterMeta);
         }
-        return mClass;
+        return getTargetClass();
     }
 
     public Class startForResult(Activity activity) {
@@ -159,17 +173,60 @@ public class Router {
             getNavigator().startWebForResult(activity, mRouterMeta);
             return null;
         }
-        if (mClass == null) {
+        if (getTargetClass() == null) {
             return null;
         }
-        if (Activity.class.isAssignableFrom(mClass)) {
-            getNavigator().startActivityForResult(activity, mClass, mRouterMeta);
-        } else if (Fragment.class.isAssignableFrom(mClass) || android.app.Fragment.class.isAssignableFrom(mClass)) {
-            getNavigator().startFragmentForResult(activity, mClass, mRouterMeta);
+        if (Activity.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startActivityForResult(activity, getTargetClass(), mRouterMeta);
+        } else if (Fragment.class.isAssignableFrom(getTargetClass()) || android.app.Fragment.class.isAssignableFrom(getTargetClass())) {
+            getNavigator().startFragmentForResult(activity, getTargetClass(), mRouterMeta);
         }
+        return getTargetClass();
+    }
+
+    public boolean isValidPageClass() {
+        if (isWeb()) {
+            return true;
+        }
+        if (getTargetClass() == null) {
+            return false;
+        }
+        if (Activity.class.isAssignableFrom(getTargetClass())
+                || Fragment.class.isAssignableFrom(getTargetClass())
+                || android.app.Fragment.class.isAssignableFrom(getTargetClass())) {
+            return true;
+        }
+        return false;
+    }
+
+    public Class getTargetClass() {
         return mClass;
     }
 
+    private Class get(String routerUri) {
+
+        String router = routerUri;
+        if (routerUri.contains("?")) {
+            router = routerUri.substring(0, routerUri.indexOf("?"));
+        }
+
+        Class clz = routerCache.get(router);
+
+        if (clz == null) {
+            try {
+                clz = MrouterHelper.getClz(router);
+            } catch (Exception e) {
+                Log.e("Router", "Errors of reflecting the activity of the router \"" + router + "\"!!!\n" + e);
+                return null;
+            }
+
+            if (clz != null) {
+                routerCache.put(router, clz);
+            }
+        }
+
+        return clz;
+    }
 
     public interface IWebChecker {
         boolean isWebMode(RouterMeta meta);

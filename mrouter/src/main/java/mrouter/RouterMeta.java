@@ -84,6 +84,17 @@ public class RouterMeta {
         return mRouterHelper.startForResult(activity);
     }
 
+    public boolean isWeb() {
+        return mRouterHelper.getWebChecker() != null && mRouterHelper.getWebChecker().isWebMode(this);
+    }
+
+    public Class getTargetClass() {
+        return mRouterHelper.getTargetClass();
+    }
+
+    public boolean isValidPageClass() {
+        return mRouterHelper.isValidPageClass();
+    }
 
     @IntDef({
             Intent.FLAG_ACTIVITY_SINGLE_TOP,
@@ -123,6 +134,11 @@ public class RouterMeta {
         return this;
     }
 
+    public RouterMeta addFlags(@FlagInt int flag) {
+        this.flags |= flag;
+        return this;
+    }
+
     public int getFlags() {
         return flags;
     }
@@ -132,8 +148,69 @@ public class RouterMeta {
         return this;
     }
 
+    private String mAction;
+
+    public RouterMeta withAction(String action) {
+        mAction = action;
+        return this;
+    }
+
+    public String getAction(){
+        return mAction;
+    }
+
     // Follow api copy from #{Bundle}
 
+    /**
+     * Add extended data to the intent.  The name must include a package
+     * prefix, for example the app com.android.contacts would use names
+     * like "com.android.contacts.ShowAll".
+     *
+     * @param name The name of the extra data, with package prefix.
+     * @param value The Bundle data value.
+     *
+     * @return Returns the same Intent object, for chaining multiple calls
+     * into a single statement.
+     *
+     * @see #withExtra
+     * @see #removeExtra
+     * @see #getBundleExtra(String)
+     */
+    public RouterMeta withExtra(String name, Bundle value) {
+        if (mBundle == null) {
+            mBundle = new Bundle();
+        }
+        mBundle.putBundle(name, value);
+        return this;
+    }
+
+    /**
+     * Remove extended data from the intent.
+     *
+     * @see #withExtra
+     */
+    public void removeExtra(String name) {
+        if (mBundle != null) {
+            mBundle.remove(name);
+            if (mBundle.size() == 0) {
+                mBundle = null;
+            }
+        }
+    }
+
+    /**
+     * Retrieve extended data from the intent.
+     *
+     * @param name The name of the desired item.
+     *
+     * @return the value of an item that previously added with putExtra()
+     * or null if no Bundle value was found.
+     *
+     * @see #withExtra(String, Bundle)
+     */
+    public Bundle getBundleExtra(String name) {
+        return mBundle == null ? null : mBundle.getBundle(name);
+    }
     /**
      * Inserts a String value into the mapping of this Bundle, replacing
      * any existing value for the given key.  Either key or value may be null.
@@ -431,11 +508,21 @@ public class RouterMeta {
         return this;
     }
 
+    public RouterMeta withExtras(@Nullable Bundle value) {
+        if (mBundle == null) {
+            mBundle = new Bundle();
+        }
+        if (value != null) {
+            mBundle.putAll(value);
+        }
+        return this;
+    }
+
     public Bundle getExtras() {
         return mBundle;
     }
 
-    public String getRouterUri(){
+    public String getRouterUri() {
         return mRouterUri;
     }
 
