@@ -59,14 +59,9 @@ public class Mrouter {
     public boolean open(String routerUri, Intent dataIntent) {
         RouterMeta routerMeta = Router.build(routerUri);
         if (dataIntent!=null){
-            if (dataIntent.getFlags()==0){
-                dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
             routerMeta.withExtras(dataIntent.getExtras())
                     .withFlags(dataIntent.getFlags())
                     .withAction(dataIntent.getAction());
-        }else {
-            routerMeta.withFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         if (routerMeta.isValidPageClass()) {
             try {

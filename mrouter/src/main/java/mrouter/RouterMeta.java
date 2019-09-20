@@ -37,7 +37,7 @@ public class RouterMeta {
     private Bundle mBundle = new Bundle();
     private Bundle options = new Bundle();
     private String mRouterUri;
-    private int flags = -1;
+    private int flags = 0;
     private Integer requestCode = null;
 
     public RouterMeta withRequestCode(int requestCode) {

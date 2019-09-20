@@ -28,6 +28,9 @@ public abstract class AbsNavigator implements INavigator {
                 intent.setAction(routerMeta.getAction());
             }
         }
+        if (!(context instanceof Activity)) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         context.startActivity(intent);
     }
 
@@ -94,7 +97,9 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta.getFlags() != 0) {
             intent.setFlags(routerMeta.getFlags());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (!(context instanceof Activity)) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             context.startActivity(intent, routerMeta.getOptions());
         } else {
@@ -113,7 +118,6 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta.getFlags() != 0) {
             intent.setFlags(routerMeta.getFlags());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -134,7 +138,6 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta.getFlags() != 0) {
             intent.setFlags(routerMeta.getFlags());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -155,7 +158,6 @@ public abstract class AbsNavigator implements INavigator {
         if (routerMeta.getFlags() != 0) {
             intent.setFlags(routerMeta.getFlags());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         int requestCode = routerMeta.getRequestCode() != null ? routerMeta.getRequestCode() : 0;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
